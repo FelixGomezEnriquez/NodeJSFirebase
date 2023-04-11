@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        table {
+            margin-top: 20px;
+        }
+    </style>
+    <script>
+
+        async function insertar(data) {
+
+            await fetch("/insertar", {
+                method: 'POST', // *GET, POST, PUT, DELETE, etc.
+                headers: {
+                    'Content-Type': 'application/json',
+                    // 'Content-Type': 'application/x-www-form-urlencoded'
+                    mode: "cors"
+                },
+                body: data // body data type must match "Content-Type" header
+            });
+
+            //Este setTimeout es provisional 
+            
+            setTimeout(() => {
+                fetch("/leer")
+                    .then((res) => res.json())
+                    .then((res) => {
+                        document.getElementById("datos").innerHTML = "";
+                        let json = JSON.parse(res);
+                        console.log(json);
+                        document
+                            .getElementById("datos")
+                            .innerHTML += `<tr style="border: 2px solid black; border-collapse: collapse;" >
+                                <th style="border: 2px solid black; border-collapse: collapse;"> Marca </th>
+                                <th style="border: 2px solid black; border-collapse: collapse;"> Calidad Imagen </th> 
+                                </tr>`;
+
+                        json.forEach(element => {
+                            console.log(element);
+
+                            document
+                                .getElementById("datos")
+                                .innerHTML += `<tr style="border: 2px solid black; border-collapse: collapse;" >
+                                <td style="border: 2px solid black; border-collapse: collapse;"> ${element.marca} </td>
+                                <td style="border: 2px solid black; border-collapse: collapse;">${element.calidadImagen} </td>
+                               </tr>`;
+
+                        });
+                    }).catch(e => console.log(e));
+            }, 40);
+
+
+        }
+        window.addEventListener("load", () => {
+
+            fetch("/leer")
+                .then((res) => res.json())
+                .then((res) => {
+                    document.getElementById("datos").innerHTML = "";
+                    let json = JSON.parse(res);
+                    console.log(json);
+                    document
+                        .getElementById("datos")
+                        .innerHTML += `<tr style="border: 2px solid black; border-collapse: collapse;" >
+                                <th style="border: 2px solid black; border-collapse: collapse;"> Marca </th>
+                                <th style="border: 2px solid black; border-collapse: collapse;"> Calidad Imagen </th> 
+                                </tr>`;
+
+                    json.forEach(element => {
+                        console.log(element);
+
+                        document
+                            .getElementById("datos")
+                            .innerHTML += `<tr style="border: 2px solid black; border-collapse: collapse;" >
+                                <td style="border: 2px solid black; border-collapse: collapse;"> ${element.marca} </td>
+                                <td style="border: 2px solid black; border-collapse: collapse;">${element.calidadImagen} </td>
+                               </tr>`;
+                    });
+                });
+
+
+            document.getElementById("insertar").addEventListener("click", () => {
+
+                let marca = document.getElementById("marca").value
+                console.log(marca);
+                let calidadImagen = document.getElementById("calidadImagen").value
+                let data = JSON.stringify({ marca: marca, calidadImagen: calidadImagen });
+
+                console.log(data);
+                insertar(data);
+            });
+        });
+    </script>
+</head>
+
+<body>
+    <label for="">Marca</label>
+    <input type="text" name="marca" id="marca">
+    <label for="">Calidad de imagen</label>
+    <input type="text" name="calidadImagen" id="calidadImagen">
+    <button id="insertar">Insertar Datos</button>
+
+    <div>
+        <table id="datos" style="border: 2px solid black; border-collapse: collapse;">
+
+
+        </table>
+
+
+    </div>
+</body>
+
+</html>
